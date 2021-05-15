@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <style>
+
+            td{
+
+                border: 1px solid black;
+                padding: 10px;
+            }
+            tr{
+                border:  1px solid black;
+            }
+            th{
+                border:  1px solid black;
+            }
+
+
+        </style>
+
+
+    <script> src=  "https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"</script>
+
+    <script>  src= "https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js" </script>
+
+        <!-- ===== BOX ICONS ===== -->
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+
+        <!-- ===== CSS ===== -->
+        <link rel="stylesheet" href="assets/css/styles.css">
+
+        <title>Sidebar menu responsive</title>
+        
+    </head>
+    <body id="body-pd">
+
+
+
+        <header class="header" id="header">
+            <div class="header__toggle">
+                <i class='bx bx-menu' id="header-toggle"></i>
+            </div>
+
+            <div class="header__img">
+                <img src="assets/img/perfil.jpg" alt="">
+            </div>
+        </header>
+
+        <div class="l-navbar" id="nav-bar">
+            <nav class="nav">
+                <div>
+                    <a href="#" class="nav__logo">
+                        <i class='bx bx-layer nav__logo-icon'></i>
+                        <span class="nav__logo-name">Apna Dhandha</span>
+                    </a>
+
+                    <div class="nav__list">
+                        <a href="index.html" class="nav__link">
+                        <i class='bx bx-grid-alt nav__icon' ></i>
+                            <span class="nav__name">Prodcut page</span>
+                        </a>
+
+                        <a href="User.html" class="nav__link active">
+                            <i class='bx bx-user nav__icon' ></i>
+                            <span class="nav__name">Users</span>
+                        </a>
+                        
+                        <a href="Messages.html" class="nav__link">
+                            <i class='bx bx-message-square-detail nav__icon' ></i>
+                            <span class="nav__name">Messages</span>
+                        </a>
+
+                      
+                        <a href="Data.html" class="nav__link">
+                            <i class='bx bx-folder nav__icon' ></i>
+                            <span class="nav__name">Data</span>
+                        </a>
+
+                        <a href="Analytics.html" class="nav__link">
+                            <i class='bx bx-bar-chart-alt-2 nav__icon' ></i>
+                            <span class="nav__name">Analytics</span>
+                        </a>
+                    </div>
+                </div>
+
+            
+            </nav>
+        </div>
+
+        <h1>User</h1>
+    
+        <h2>User Data</h2>
+        <table class="table table-striped" id="table" style="border:  1px solid black;" >
+            
+              <tr>
+                <th>id</th>
+                <th>email</th>
+                <th>name</th>
+                </tr>
+
+            <tbody id = mytable></tbody>
+        </table>
+
+
+            <!-- The core Firebase JS SDK is always required and must be listed first -->
+            <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-firestore.js"></script>
+    
+            <!-- TODO: Add SDKs for Firebase products that you want to use
+                https://firebase.google.com/docs/web/setup#available-libraries -->
+            <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js"></script>
+    
+
+            <script>
+                var firebaseConfig = {
+                apiKey: "AIzaSyCcJNnkBCG51uJgtIk1A4a7lCO68plEQxM",
+                authDomain: "ecommerce-54e3d.firebaseapp.com",
+                projectId: "ecommerce-54e3d",
+                storageBucket: "ecommerce-54e3d.appspot.com",
+                messagingSenderId: "602966625503",
+                appId: "1:602966625503:web:8dca1188eb629430afad6a",
+                measurementId: "G-7BGYVJV0V4"
+                };
+                // Initialize Firebase
+
+                firebase.initializeApp(firebaseConfig);
+                
+                var db = firebase.firestore();
+                
+                const table_id = document.querySelector("#table");
+
+                function renderAccount(doc){
+
+                let tr = document.createElement('tr');
+                let td_email = document.createElement('td');
+                let td_full_name = document.createElement('td');
+                let td_uni_id = document.createElement('td'); 
+                tr.setAttribute('data-id', doc.id);
+
+                td_email.textContent = doc.data().firstName;
+                td_full_name.textContent = doc.data().id;
+                 td_uni_id.textContent = doc.data().email;
+
+                 tr.appendChild(td_full_name);
+                 tr.appendChild(td_uni_id);
+                 tr.appendChild(td_email);
+
+                 table_id.appendChild(tr);
+
+            }
+
+                
+                db.collection("USER").get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        console.log(doc.id, " => ", doc.data());
+
+                        
+                    let data = doc.data();
+                    
+                    // let row  = `<tr>
+                    //                <td>${data.firstName}</td>
+                    //                 <td>${data.id}</td>
+                    //                 <td>${data.email}</td>
+                    //         </tr>`;
+                    // let table = document.getElementById('myTable')
+                    // table.innerHTML += row
+                    
+                    renderAccount(doc)
+                
+                })
+                .catch(err=>{
+                    console.log(`Error: ${err}`)
+                });
+                })
+                      
+            </script>
+    
+    
+
+        <!--===== MAIN JS =====-->
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/app.js"></script>
+
+    </body>
+                
+
+
+</html>

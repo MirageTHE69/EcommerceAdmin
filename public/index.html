@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style>
+        td{
+
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        
+        
+        </style>
+
+
+
+        <!-- ===== BOX ICONS ===== -->
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+       
+        <script> src=  "https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"</script>
+
+        <script>  src= "https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js" </script>
+    
+       
+
+    
+     	<link rel="stylesheet"  href="assets/css/loading.css">
+
+        <!-- ===== CSS ===== -->
+        <link rel="stylesheet" href="assets/css/styles.css">
+
+
+
+        <title>Sidebar menu responsive</title>
+    </head>
+    <body id="body-pd" onload="myFunction()" style="margin:0;">
+        <header class="header" id="header">
+            <div class="header__toggle">
+                <i class='bx bx-menu' id="header-toggle"></i>
+            </div>
+
+            <div class="header__img">
+                <img src="assets/img/perfil.jpg" alt="">
+            </div>
+        </header>
+
+        <div class="l-navbar" id="nav-bar">
+            <nav class="nav">
+                <div>
+                    <a href="#" class="nav__logo">
+                        <i class='bx bx-layer nav__logo-icon'></i>
+                        <span class="nav__logo-name">Apna Dhandha</span>
+                    </a>
+
+                    <div class="nav__list">
+                        <a href="index.html" class="nav__link active">
+                        <i class='bx bx-grid-alt nav__icon' ></i>
+                            <span class="nav__name">Product Page</span>
+                        </a>
+
+                        <a href="User.html" class="nav__link">
+                            <i class='bx bx-user nav__icon' ></i>
+                            <span class="nav__name">Users</span>
+                        </a>
+                        
+                        <a href="Messages.html" class="nav__link">
+                            <i class='bx bx-message-square-detail nav__icon' ></i>
+                            <span class="nav__name">Messages</span>
+                        </a>
+
+                      
+                        <a href="Data.html" class="nav__link">
+                            <i class='bx bx-folder nav__icon' ></i>
+                            <span class="nav__name">Data</span>
+                        </a>
+
+                        <a href="Analytics.html" class="nav__link">
+                            <i class='bx bx-bar-chart-alt-2 nav__icon' ></i>
+                            <span class="nav__name">Analytics</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div id="loader"></div>
+    
+        <h1>Product Dashboard</h1>
+
+        <div>  
+            <dialog id="myFirstDialog" style="width:50%;background-color:#F4FFEF;border:1px dotted black;">  
+              <h1 id="punTimes">Add product data</h1> 
+                    Product_name: <input type="text" placeholder="Product name: " id="product_name"><br /><br /> 
+                    Product_img: <input type="text" placeholder="Product img String" id="product_image"><br /><br /> 
+                    product_des:<input type="text" placeholder="Product des" id="product_des"> <br /><br /> 
+                    product_rate:<input type="text" placeholder="Product rate" id="product_rate"> <br /><br /> 
+                    <br /><br /> 
+                    
+                    <button id="saveButton" onclick="storeData()" >Submit</button>
+                      
+            <button id="hide">Close</button>  
+            </dialog>  
+            <button id="show">Add Product</button> </div> 
+
+        <h1>Product details</h1>
+
+    
+
+        <table class="table table-striped" id="table" style="border: 1px solid black;" >
+            
+              <tr style="border: 1px solid black;">
+                <th style="border: 1px solid black;">Product_name</th>
+                <th style="border: 1px solid black;"> Product_img</th>
+                <th style="border: 1px solid black;">Product_des</th>
+                <th style="border: 1px solid black;">Product_rate</th>
+                <th style="border: 1px solid black;">delete section</th>
+                <th style="border: 1px solid black;">edit section</th>
+                </tr>
+
+            <tbody id = mytable>
+                <tr>
+                    <td id="P_name"  > </td>
+                    <td id="P_Img"></td>
+                    <td id="P_des"></td>
+                    <td id="P_rate"></td>
+                    <td id ="P_delete"> <Button id = "delete" onclick="deleteData()">Delete</Button> </td>
+                    <td id ="P_edit"> <Button id = "edit" onclick="editdata()">Edit</Button> </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+       
+       
+        <!--===== MAIN JS =====-->
+        <script src="assets/js/main.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-firestore.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js"></script>
+
+
+        <script>
+            var firebaseConfig = {
+            apiKey: "AIzaSyCcJNnkBCG51uJgtIk1A4a7lCO68plEQxM",
+            authDomain: "ecommerce-54e3d.firebaseapp.com",
+            projectId: "ecommerce-54e3d",
+            storageBucket: "ecommerce-54e3d.appspot.com",
+            messagingSenderId: "602966625503",
+            appId: "1:602966625503:web:8dca1188eb629430afad6a",
+            measurementId: "G-7BGYVJV0V4"
+            };
+            // Initialize Firebase
+
+            firebase.initializeApp(firebaseConfig);
+            
+            var db = firebase.firestore();
+            
+            const table_id = document.querySelector("#table");
+
+
+            //sTORE DATA FORM DAILOG BOX
+
+            function storeData() {
+ 
+                var Pname = document.getElementById("product_name").value;
+                var Pimage = document.getElementById("product_image").value;
+                var Pdec = document.getElementById("product_des").value;
+                var Prate = document.getElementById("product_rate").value;
+            
+
+                    db.collection("Products").doc().set({
+                    
+                        product_name : Pname,
+                        product_image: Pimage,
+                        product_des  :Pdec,
+                        product_rate :Prate,
+
+                    })
+                    .then(function() {
+                        console.log("Doc successful");
+                        location.reload();
+                        return false;
+                    })
+                    .catch(function(error) {
+                    console.error("Error writing doc", error);
+                    });
+                }
+
+            function renderAccount(doc){
+
+        
+
+            let tr = document.createElement('tr');
+            let td_Pname = document.createElement('td');
+            let td_Pimg = document.createElement('td');
+            let td_Pdes = document.createElement('td'); 
+            let td_Prate = document.createElement('td'); 
+            let td_delete = document.createElement('td');
+            let td_edit = document.createElement('td');
+            
+           
+            tr.setAttribute('data-id', doc.id);
+
+        
+             td_Pname.textContent = doc.data().product_name;
+             td_Pimg.textContent = doc.data().product_image;
+             td_Pdes.textContent = doc.data().product_des;
+             td_Prate.textContent = doc.data().product_rate;
+            
+            
+
+            let a = document.createElement('button');
+           
+            td_delete = a;
+            a.value='button'
+            a.type = 'submit'
+            a.style.width = '200px'; // setting the width to 200px
+            a.style.height = '200px'; // setting the height to 200px
+            a.style.background = 'D:/xampp/htdocs/responsive-sidebar-menu-master/public/icons8-delete-trash-48.png'; // setting the background color to teal
+            a.style.color = 'white'; // setting the color to white
+            a.style.fontSize = '20px';
+            a.addEventListener ("click", function() {
+            
+            var i =  doc.id;
+
+            deleteproduct(i);
+           });
+
+
+            
+
+
+            let edit = document.createElement('button');
+            
+            td_edit = edit;
+            edit.value='button'
+            edit.style.width = '200px'; // setting the width to 200px
+            edit.style.height = '200px'; // setting the height to 200px
+            edit.style.background = 'teal'; // setting the background color to teal
+            edit.style.color = 'white'; // setting the color to white
+            edit.style.fontSize = '20px';
+            edit.addEventListener ("click", function() {
+
+            
+
+            });
+
+            
+           
+            
+            let img =document.createElement('img');
+            img.src = doc.data().product_image;
+            img.height = 200;
+            img.width = 200;
+            img.alt = 'product_image'
+            
+
+             tr.appendChild(td_Pname);
+             tr.appendChild(td_Pimg.appendChild(img)); 
+             tr.appendChild(td_Pdes);
+             tr.appendChild(td_Prate);
+             tr.appendChild(td_delete);
+             //tr.appendChild(td_edit.appendChild(edit));
+             //tr.appendChild(td_edit);
+             
+             table_id.appendChild(tr);
+
+        }
+
+            db.collection("Products").get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    // doc.data() is never undefined for query doc snapshots
+                    console.log(doc.id, " => ", doc.data());
+
+                    
+                   let data = doc.data();
+            
+                
+                   renderAccount(doc)
+            
+            })
+           
+            })
+
+           
+                  
+        </script>
+
+
+    <script type="text/JavaScript">  
+        (function() {    
+            var dialog = document.getElementById('myFirstDialog');    
+            document.getElementById('show').onclick = function() {    
+                dialog.show();    
+            };    
+            document.getElementById('hide').onclick = function() {    
+                dialog.close();    
+            };
+        })();   
+    </script>
+
+
+
+       <script>
+        var myVar;
+        
+        function myFunction() {
+        myVar = setTimeout(showPage, 1200);
+        }
+        
+        function showPage() {
+        document.getElementById("loader").style.display = "none";
+        
+        }
+
+
+
+
+        function deleteData(){
+
+            console.log("Hello world!");
+        }
+
+        function editdata(){
+
+            console.log("Hello world!!!");
+
+        }
+
+
+
+
+        function deleteproduct(i){
+
+            db.collection("Products").doc(i).delete().then(function () {
+                 console.log("Document successfully deleted!");
+                 window.alert("City Name Delete!");
+                 location.reload();
+                 return false;
+
+
+             }).catch(function (error) {
+                 console.error("Error removing document: ", error);
+             });
+             
+
+             
+
+        }
+
+
+        </script>
+
+
+    </body>
+</html>
